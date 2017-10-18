@@ -1,0 +1,41 @@
+{
+  "name": "officebot-sdk2",
+  "version": "2.0.0",
+  "description": "API SDK Helper Code",
+  "main": "src/index.js",
+  "directories": {
+    "doc": "docs",
+    "src": "src",
+    "test": "tests"
+  },
+  "scripts": {
+    "build": "node_modules/browserify/bin/cmd.js index.js --standalone officebotSdk -o ./dist/officebot-sdk.js",
+    "coverage" : "node_modules/nyc/bin/nyc.js --reporter=html npm test",
+    "build-minified": "node_modules/browserify/bin/cmd.js index.js --standalone officebotSdk | uglifyjs -c > ./dist/officebot-sdk.min.js",
+    "docs": "node_modules/jsdoc/jsdoc.js  -r -c conf.json -R Readme.md -d docs",    
+    "postinstall": "npm run build && npm run build-minified",
+    "test": "node_modules/jshint/bin/jshint src/*.js && node_modules/mocha/bin/mocha tests/*.js && node ./run-e2e"    
+  },
+  "author": "Scott Peterson",
+  "license": "MIT",
+  "dependencies": {
+    "fast-json-patch": "^2.0.5"
+  },
+  "devDependencies": {
+    "body-parser": "^1.18.2",
+    "browserify": "^14.4.0",
+    "chai": "^4.1.2",
+    "chai-spies": "^0.7.1",
+    "express": "^4.16.2",
+    "jsdoc": "^3.5.5",
+    "karma": "^1.7.1",
+    "karma-chai": "^0.1.0",
+    "karma-chai-spies": "^0.1.4",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-mocha": "^1.3.0",
+    "karma-mocha-reporter": "^2.2.4",
+    "mocha": "^4.0.1",
+    "nyc": "^11.2.1",
+    "uglifyify": "^4.0.4"
+  }
+}

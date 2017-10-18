@@ -1,0 +1,16 @@
+{
+	"tags" : {
+		"allowUnknownTags": true,
+    "dictionaries": ["jsdoc"]
+	},
+	"source": {
+		"include" : ["index.js","./src"],
+		"includePattern": ".+\\.js(doc)?$",
+	  "excludePattern": "(^|\\/|\\\\)_"
+  },
+  "plugins": [],
+  "templates": {
+		"cleverLinks": true,
+		"monospaceLinks": true
+  }
+}
