@@ -96,11 +96,11 @@ npm run coverage && npm run docs
 
 ## Contributing
 
-Please read [Contributing.md](https://github.com/OfficeBot/officebot-sdk2/blob/master/Contributing.md) for details on our code of conduct, and the process for submitting pull requests to us.
+Please read [Contributing.md](Contributing.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/OfficeBot/officebot-sdk/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/OfficeBot/officebot-sdk2/tags). 
 
 ## Authors
 
