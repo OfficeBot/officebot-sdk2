@@ -1695,7 +1695,7 @@ class Model {
       //ignore
     }
 
-    let method = this['id'] ? 'put' : 'post';
+    let method = this.id ? 'put' : 'post';
     let instance = this;
     
     let request = new Request()
