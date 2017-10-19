@@ -3,7 +3,7 @@ let Model;
 let testModel;
 
 beforeEach(() => {
-  api = new officebotSdk.APIConfig();
+  api = new officebotSdk.API();
   Model = officebotSdk.Model;
 
   api.baseUrl('http://localhost:5544/api');
@@ -123,7 +123,7 @@ describe('Models', () => {
     });
   });
   it('Should call the api on .remove', (done) => {
-    testModel._id = '12345';
+    testModel.id = '12345';
     testModel.remove().then(() => {
       let statusCode = testModel.__response.status;
       assert(statusCode === 204);
@@ -131,7 +131,7 @@ describe('Models', () => {
     });
   });
   it('Should call the api on .update with a list of diffs', (done) => {
-    testModel._id = '12345';
+    testModel.id = '12345';
     testModel.name = 'Update Call';
     testModel.update().then(() => {
       let statusCode = testModel.__response.status;

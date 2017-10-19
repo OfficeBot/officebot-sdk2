@@ -12,6 +12,7 @@ class Request {
       url: '/',
       headers: {},
       data: undefined,
+      responseType : 'application/json',
       params : {}
     };
     this.config = {};
@@ -120,6 +121,20 @@ class Request {
     } else {
       return this.config.data;
     }
+  }
+  /**
+   * Gets or sets the response type for the request
+   * @param {string=} newType 
+   * @returns {(this | string)}
+   */
+  mediaType(newType) {
+    if ('undefined' !== typeof newType) {
+      if ('string' === typeof newType) {
+        this.config.responseType = newType;
+      }
+      return this;
+    }
+    return this.config.responseType;
   }
 
   /**

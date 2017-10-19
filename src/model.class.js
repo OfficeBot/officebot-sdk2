@@ -28,16 +28,17 @@ class Model {
       //ignore
     }
 
-    let method = this['@href'] ? 'put' : 'post';
+    let method = this.id ? 'put' : 'post';
     let instance = this;
     
     let request = new Request()
-      .url(this['@href'] || this['@root'] || '')
+      .url(this.makeHref())
       .method(method)
       .headers(headers)
       .body(this)
       .exec()
       .then((response) => {
+        Object.assign(instance, clone(response.data));
         instance.__revision = Date.now();
         instance.__response = response;
         instance.makeClean();
@@ -95,7 +96,7 @@ class Model {
     let headers = this.__config.api().commonHeaders();
 
     let patches = this.getDiffs();
-    let targetUrl = this.href();
+    let targetUrl = this.makeHref();
     let instance = this;
     let request = new Request()
       .url(targetUrl)
@@ -104,6 +105,7 @@ class Model {
       .body(patches)
       .exec()
       .then((response) => {
+        Object.assign(instance, clone(response.data));        
         instance.__revision = Date.now();
         instance.__response = response;        
         instance.makeClean();
@@ -119,10 +121,13 @@ class Model {
     this.__config = endpointConfig;
   }
 
-  href() {
-    let correctHref = this['@href'];
-    if (!correctHref && 'object' === typeof this.__config) {
-      correctHref = this.__config.baseUrl() + this.__config.url()  + this._id;
+  makeHref() {
+    let correctHref;
+    if ('object' === typeof this.__config) {
+      correctHref = this.__config.baseUrl() + this.__config.url();
+      if ('string' === typeof this.id ) {
+        correctHref += this.id;
+      }
     } else {
       correctHref = '/__unit_test__';
     }
@@ -165,7 +170,7 @@ class Model {
       headers = this.__config.api().commonHeaders();
     } catch(e) {}
 
-    let targetUrl = this.href();
+    let targetUrl = this.makeHref();
     let instance = this;
     
     let request = new Request()

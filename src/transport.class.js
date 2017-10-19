@@ -53,12 +53,13 @@ class Transport {
 			httpInstance.responseType = 'json';
 			
 			let headers = instance.request.headers();
-			httpInstance.setRequestHeader("Content-Type", "application/json");			
+			httpInstance.setRequestHeader("Content-Type", instance.request.mediaType());	
+			
 			for ( let headerName in headers ) {
 				httpInstance.setRequestHeader(headerName, headers[headerName]);
 			}
 			httpInstance.send( body );
-			
+
 			/**
 				* Handler:Aborted
 				*/

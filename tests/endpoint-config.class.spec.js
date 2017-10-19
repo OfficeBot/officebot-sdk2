@@ -27,6 +27,9 @@ describe('Endpoint Config class', () => {
   it('Should have a .model method', () => {
     assert('function' === typeof instance.model);
   });
+  it('Should have a .mediaType method', () => {
+    assert('function' === typeof instance.mediaType);
+  });
 
   describe('.api()', () => {
     it('Should return "this" when called with a config object', () => {
@@ -70,6 +73,24 @@ describe('Endpoint Config class', () => {
       let url = false;
       instance.url(url);
       assert('string' === typeof instance.url());
+    });
+  });
+  describe('.mediaType',() => {
+    it('Should return a string when called with no params', () => {
+      assert('string' === typeof instance.mediaType());
+    });
+    it('Should return "this" when called with a string', () => {
+      assert(instance === instance.mediaType('text/xml'));
+    });
+    it('Should persist a string value', () => {
+      let mime = 'text/plain';
+      instance.mediaType(mime);
+      assert(mime === instance.mediaType());
+    });
+    it('Should not persist non-string values', () => {
+      let mime = {text : 'plain'};
+      instance.mediaType(mime);
+      assert('string' === typeof instance.mediaType());
     });
   });
   describe('.model()', () => {

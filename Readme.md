@@ -1,66 +1,98 @@
 # OfficeBot SDK
 
-One Paragraph of project description goes here
-
-## Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+A handly little utility for interacting with RESTful APIs.
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+This library uses many ES6 features and will only work in modern browsers that support ES6 features. Additionally, the end-to-end test suite requires Node.js to be installed.
+
+### Installation and Getting Started
+
+Install the library via NPM:
 
 ```
-Give examples
+npm install officebot-sdk
 ```
 
-### Installing
-
-A step by step series of examples that tell you have to get a development env running
-
-Say what the step will be
+When using in the browser, this package will export a single global variable `officebotSdk`. This package can also be included in any 
+project that uses Browserify by requiring it in:
 
 ```
-Give the example
+<script src="node_modules/officebot-sdk/dist/officebot-sdk.min.js"></script>
+```
+OR
+```
+const officebotSdk = require('officebot-sdk');
 ```
 
-And repeat
+### Example Usage
 
 ```
-until finished
+let api = new officebotSdk.API();
+
+api
+  .baseUrl('http://localhost/api');
+
+api
+  .endpoint('Sample')
+  .url('/sample');
+
+api.Sample
+  .find({id : 1})
+  .select('id title')
+  .limit(10)
+  .exec().then(arrayOfModels => {
+    //Do something with the array of models
+  }).catch(err => {
+    console.error(err);
+  });
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
+Check out our [documentation](https://www.office-bot.com/sdk/docs) for more examples.
+
+### Building
+
+Though a prebuild version of this library is included with this repository, you may find yourself in a situation where rebuilding it from source is desirable. Two NPM scripts are provided to do exactly that:
+
+```
+npm run build
+```
+
+Or if you'd prefer a minified version
+
+```
+npm run build-minified
+```
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
+Unit tests and end-to-end tests are included. To run the full test suite, first ensure that all dependencies are installed:
 
 ```
-Give an example
+npm install
 ```
 
-### And coding style tests
-
-Explain what these tests test and why
-
+Then run:
 ```
-Give an example
+npm test
 ```
 
-## Deployment
+### Generating Docs and Coverage Report
 
-Add additional notes about how to deploy this on a live system
+NPM scripts for generating documentation are included.
+
+```
+npm run coverage && npm run docs
+```
 
 ## Built With
 
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+* [Browserify](http://browserify.org/) - Javascript bundler
+* [Istanbul](https://istanbul.js.org/) - Code coverage
+* [Karma](https://karma-runner.github.io/1.0/index.html) - Test runner
+* [Mocha](https://mochajs.org/) - Unit testing
+* [NodeJS](https://nodejs.org/en/) - Provides core libraries for query parsing
+* [Fast JSON Patch](https://github.com/Starcounter-Jack/JSON-Patch) - Used to calculate diffs
 
 ## Contributing
 
@@ -68,20 +100,16 @@ Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c6
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/OfficeBot/officebot-sdk/tags). 
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+* Scott Peterson - [OfficeBot](https://github.com/OfficeBot)
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](License.md) file for details
 
 ## Acknowledgments
 
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
+* Billie Thompson - [PurpleBooth](https://github.com/PurpleBooth) for providing the CONTRIBUTING.md gist

@@ -8,7 +8,7 @@ let SDK = (function(Promise) {
   Settings.setPromiseLib(Promise);
 
   let exports = {
-    APIConfig       : require('./src/api-config.class'),
+    API             : require('./src/api-config.class'),
     Cache           : require('./src/cache.class'),
     EndpointConfig  : require('./src/endpoint-config.class'),
     Endpoint        : require('./src/endpoint.class'),

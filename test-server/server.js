@@ -68,6 +68,7 @@ app
  */
 function createItem(req, res, next) {
   let model = req.body;
+  model.id = '1234567890';
   console.log(`[${new Date()}] Create called`);
   return res.status(201).json(model);
 }

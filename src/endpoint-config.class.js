@@ -9,10 +9,28 @@ class EndpointConfig {
 
     let defaults = {
       'url' : '/',
+      'responseType' : "application/json",
       'instantiator' : Model
     };
     Object.assign(this.config, defaults, clone(config));
   }
+
+  /**
+   * Gets or sets the expected media return type. Ultimately, it is up to the transport
+   * to use this setting to correctly talk to the api
+   * Note - This is currently unused
+   * @param {string=} newType - The new media type that this endpoint communicates with
+   */
+  mediaType(newType) {
+    if ('undefined' !== typeof newType) {
+      if ('string' === typeof newType) {
+        this.config.responseType = newType;
+      }
+      return this;
+    }
+    return this.config.responseType;
+  }
+
   /**
    * Gets / sets the API configuration object. This is needed so each
    * endpoint can share common settings

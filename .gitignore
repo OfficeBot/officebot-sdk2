@@ -24,9 +24,6 @@ coverage
 # Benchmarking
 benchmarks/graphs
 
-# Build files
-/dist/*.js
-
 # DOCS
 docs
 

@@ -34,6 +34,9 @@ describe('Request class', () => {
   it('Should have .body method', () => {
     assert('function' === typeof instance.body);
   });
+  it('Should have a .mediaType method', () => {
+    assert('function' === typeof instance.mediaType);
+  })
   it('Should have .toJSON method', () => {
     assert('function' === typeof instance.toJSON);    
   });
@@ -144,6 +147,24 @@ describe('Request class', () => {
       instance.body(newBody);
       instance.body("something invalid");
       assert(instance.body().some === 'body');      
+    });
+  });
+  describe('.mediaType',() => {
+    it('Should return a string when called with no params', () => {
+      assert('string' === typeof instance.mediaType());
+    });
+    it('Should return "this" when called with a string', () => {
+      assert(instance === instance.mediaType('text/xml'));
+    });
+    it('Should persist a string value', () => {
+      let mime = 'text/plain';
+      instance.mediaType(mime);
+      assert(mime === instance.mediaType());
+    });
+    it('Should not persist non-string values', () => {
+      let mime = {text : 'plain'};
+      instance.mediaType(mime);
+      assert('string' === typeof instance.mediaType());
     });
   });
   describe('.toJSON()', () => {
