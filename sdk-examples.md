@@ -194,7 +194,7 @@ Then set that model as the default for your endpoint:
 ```
 api
   .endpoint("CustomEndpoint")
-  .route('/custom-endpoint)
+  .route('/custom-endpoint')
   .model(CustomModel);
 ```
 
