@@ -1,5 +1,5 @@
 {
-  "name": "officebot-sdk2",
+  "name": "officebot-sdk",
   "version": "2.0.0",
   "description": "Helper library for interacting with RESTful APIs",
   "main": "src/index.js",
