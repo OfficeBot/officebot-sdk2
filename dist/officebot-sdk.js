@@ -1509,13 +1509,13 @@ class Endpoint {
           model = data.map((item) => {
             let entry = new modelConstructor(item);
             entry.config(endpointConfig);
-            entry.__request = clone(request);
+            Object.defineProperty(model, '__request', { value : clone(request), enumerable : false });
             return entry;            
           });
         } else {
           model = new modelConstructor(data);
           model.config(endpointConfig);
-          model.__request = clone(request);
+          Object.defineProperty(model, '__request', { value : clone(request), enumerable : false });
         }
 
         if (this.hasCache()) {

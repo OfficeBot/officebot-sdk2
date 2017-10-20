@@ -1,6 +1,6 @@
 {
   "name": "officebot-sdk",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Helper library for interacting with RESTful APIs",
   "main": "src/index.js",
   "directories": {
@@ -14,9 +14,9 @@
     "build-minified": "node_modules/browserify/bin/cmd.js index.js --standalone officebotSdk | uglifyjs -c > ./dist/officebot-sdk.min.js",
     "docs": "node_modules/jsdoc/jsdoc.js  -r -c .jsdoc.json -R sdk-examples.md -d docs",
     "test": "node_modules/jshint/bin/jshint src/*.js && node_modules/mocha/bin/mocha tests/*.js && node ./run-e2e",
-    "preversion" : "npm test",
-    "version" : "npm run build && npm run build-minified && git add -A",
-    "postversion" : "git push && git push --tags"
+    "preversion": "npm test",
+    "version": "npm run build && npm run build-minified && git add -A",
+    "postversion": "git push && git push --tags"
   },
   "keywords": [
     "rest",
