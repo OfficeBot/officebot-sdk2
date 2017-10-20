@@ -20,7 +20,7 @@ For example:
 
 ```
 api
-  .enpoint('AccountManagers')
+  .endpoint('AccountManagers')
   .url('/people/account-managers');
 ```
 
