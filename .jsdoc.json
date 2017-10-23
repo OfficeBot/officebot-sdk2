@@ -1,0 +1,20 @@
+{
+	"tags" : {
+		"allowUnknownTags": true,
+    "dictionaries": ["jsdoc"]
+	},
+	"source": {
+		"include" : ["index.js","./src"],
+		"includePattern": ".+\\.js(doc)?$",
+	  "excludePattern": "(^|\\/|\\\\)_"
+  },
+  "plugins": [],
+  "templates": {
+		"title" : "OfficeBot SDK",
+		"cleverLinks": true,
+		"monospaceLinks": true
+	},
+	"opts" : {
+    "template" : "node_modules/latodoc"
+  }
+}

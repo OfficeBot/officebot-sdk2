@@ -1,0 +1,31 @@
+# OS X
+.DS_Store*
+Icon?
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+.directory
+*~
+
+# npm
+node_modules
+*.log
+*.gz
+
+# Coverage
+.nyc_output
+coverage
+
+# Benchmarking
+benchmarks/graphs
+
+# DOCS
+docs
+
+# vim swap files
+.swp

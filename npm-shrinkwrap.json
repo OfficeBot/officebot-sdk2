@@ -1,0 +1,16 @@
+{
+  "name": "officebot-sdk2",
+  "version": "2.0.3",
+  "dependencies": {
+    "deep-equal": {
+      "version": "1.0.1",
+      "from": "deep-equal@>=1.0.1 <2.0.0",
+      "resolved": "https://registry.npmjs.org/deep-equal/-/deep-equal-1.0.1.tgz"
+    },
+    "fast-json-patch": {
+      "version": "2.0.5",
+      "from": "fast-json-patch@latest",
+      "resolved": "https://registry.npmjs.org/fast-json-patch/-/fast-json-patch-2.0.5.tgz"
+    }
+  }
+}
