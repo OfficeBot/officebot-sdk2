@@ -98,7 +98,7 @@ DELETE http://localhost/api/people/account-managers/123456
 ### Creating a Model Instance
 
 ```
-let newManager = api.AccountManagers({name : 'Scott', salary : '80k'});
+let newManager = api.AccountManagers.createNew({name : 'Scott', salary : '80k'});
   
 ```
 

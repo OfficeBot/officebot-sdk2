@@ -23,7 +23,7 @@ class Utils {
     }
 }
 /**
- * Allows are static method to call this recursively
+ * Allows our static method to call this recursively
  * @param {object} obj
  * @private
  * @returns {object} Copied object 
