@@ -25,6 +25,12 @@ describe('Api Config class', () => {
     assert('function' === typeof instance.commonHeaders);
   });
 
+  it('Should allow multiple endpoints without crashing', () => {
+    instance.endpoint('Test1').url('test1');
+    instance.endpoint('Test2').url('test2');
+    assert(true);
+  });
+
   describe('.baseUrl()', () => {
     it ('Should return "this" when passed a string', () => {
       let response = instance.baseUrl('/');

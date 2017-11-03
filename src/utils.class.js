@@ -1,3 +1,5 @@
+var clone_lib = require('clone');
+
 /**
  * @constructor
  */
@@ -19,7 +21,8 @@ class Utils {
      * @returns {object} Copied object
      */
     static clone(obj) {
-        return privateClone(obj);
+        return clone_lib(obj);
+        // return privateClone(obj);
     }
 }
 /**
