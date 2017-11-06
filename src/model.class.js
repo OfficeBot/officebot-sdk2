@@ -9,7 +9,7 @@ const Request = require('./request.class');
 class Model {
   constructor(data = {}) {
     Object.defineProperty(this, '__config', {enumerable : false, writable : true});
-    Object.defineProperty(this, '__response', {enumerable : false, writable : true});    
+    Object.defineProperty(this, '__response', {enumerable : false, writable : true});
     Object.defineProperty(this, '__original', {value : data, writable : true});
     Object.defineProperty(this, '__revision', {value : Date.now(), writable : true});
 
@@ -18,7 +18,7 @@ class Model {
   /**
    * Persists this model back to the api
    * @param {function=} cb - Callback to invoke on completion (failure or success)
-   * @returns {Request} 
+   * @returns {Request}
    */
   save(cb = noop) {
     let headers = {};
@@ -30,7 +30,7 @@ class Model {
 
     let method = this.id ? 'put' : 'post';
     let instance = this;
-    
+
     let request = new Request()
       .url(this.makeHref())
       .method(method)
@@ -66,7 +66,7 @@ class Model {
       .exec();
     return request;
   }
-  
+
   /**
    * Starts listening for changes and calls onChange whenever they are detected
    * @param {function} onChange - Function to call when changes detected
@@ -87,7 +87,7 @@ class Model {
   }
 
   /**
-   * Puts only the changes (in patch notation) back to the api. The 
+   * Puts only the changes (in patch notation) back to the api. The
    * server-side endpoint must support PATCH
    * @returns {Request}
    */
@@ -105,9 +105,9 @@ class Model {
       .body(patches)
       .exec()
       .then((response) => {
-        Object.assign(instance, clone(response.data));        
+        Object.assign(instance, clone(response.data));
         instance.__revision = Date.now();
-        instance.__response = response;        
+        instance.__response = response;
         instance.makeClean();
       });
     return request;
@@ -115,7 +115,7 @@ class Model {
 
   /**
    * Sets the underlying API config
-   * @param {EndpointConfig} endpointConfig 
+   * @param {EndpointConfig} endpointConfig
    */
   config(endpointConfig = {}) {
     this.__config = endpointConfig;
@@ -124,7 +124,7 @@ class Model {
   makeHref() {
     let correctHref;
     if ('object' === typeof this.__config) {
-      correctHref = this.__config.baseUrl() + this.__config.url();
+      correctHref = this.__config.baseUrl() + '/' + this.__config.url() + '/';
       if ('string' === typeof this.id ) {
         correctHref += this.id;
       }
@@ -136,8 +136,8 @@ class Model {
 
   /**
    * Returns a list of diffs comparing this version to the last
-   * synced version from the server 
-   * @private 
+   * synced version from the server
+   * @private
    * @returns {object[]} Array of changes
    */
   getDiffs() {
@@ -172,7 +172,7 @@ class Model {
 
     let targetUrl = this.makeHref();
     let instance = this;
-    
+
     let request = new Request()
       .url(targetUrl)
       .method('delete')
