@@ -194,7 +194,7 @@ class Endpoint {
           model = data.map((item) => {
             let entry = new modelConstructor(item);
             entry.config(endpointConfig);
-            Object.defineProperty(model, '__request', { value : clone(request), enumerable : false });
+            Object.defineProperty(entry, '__request', { value : clone(request), enumerable : false });
             return entry;            
           });
         } else {

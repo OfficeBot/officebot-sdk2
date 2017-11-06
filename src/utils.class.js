@@ -1,3 +1,5 @@
+var clone_lib = require('clone');
+
 /**
  * @constructor
  */
@@ -19,11 +21,12 @@ class Utils {
      * @returns {object} Copied object
      */
     static clone(obj) {
-        return privateClone(obj);
+        return clone_lib(obj);
+        // return privateClone(obj);
     }
 }
 /**
- * Allows are static method to call this recursively
+ * Allows our static method to call this recursively
  * @param {object} obj
  * @private
  * @returns {object} Copied object 

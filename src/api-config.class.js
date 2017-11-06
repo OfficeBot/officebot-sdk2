@@ -32,7 +32,7 @@ class APIConfig {
    * @param {string} endpointName - The name that will be used to get this endpoint
    * @returns {@link Endpoint} An instance of Endpoint
    */
-  endpoint(endpointName = '__default') {
+  endpoint(endpointName = '__default__') {
     let config = new EndpointConfig().api(this);
     this[ endpointName ] = new Endpoint(config);
     return this[ endpointName ];
