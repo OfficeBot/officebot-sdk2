@@ -23,11 +23,14 @@ class Endpoint {
   }
   /**
    * Instantiates a new model instance and returns it
-   * @param {object=} data - Initialization data for the new model instance 
+   * @param {object=} data - Initialization data for the new model instance
    * @returns {@link Model} New instance of Model
    */
   createNew(data = {}) {
-    let root = this.endpointConfig.baseUrl() + this.endpointConfig.url();
+    let root = new URLBuilder([
+      this.endpointConfig.baseUrl(),
+      this.endpointConfig.url()
+    ]);
     data['@root'] = root;
     let instantiator = this.endpointConfig.model();
     let instance = new instantiator(data);
@@ -47,7 +50,7 @@ class Endpoint {
     }
     return this.endpointConfig.model();
   }
-  /** 
+  /**
    * Gets / sets the endpoint's relative url
    * @param {string=} url - The new url value
    * @returns {(this|string)} This instance or the current url
@@ -61,7 +64,7 @@ class Endpoint {
   }
   /**
    * Builds a query to find an object with the specified identifier
-   * @param {string} id - the unique model identifier 
+   * @param {string} id - the unique model identifier
    * @returns {this}
    */
   findById(id) {
@@ -78,7 +81,7 @@ class Endpoint {
   }
   /**
    * Creates a query to find objects that match the optional query
-   * @param {object=} query 
+   * @param {object=} query
    * @returns {this}
    */
   find(query) {
@@ -92,10 +95,10 @@ class Endpoint {
   }
 
   /**
-   * Creates a query to find a unique model with the specified id 
+   * Creates a query to find a unique model with the specified id
    * and replaces it's data with the specified body object
-   * @param {string} id - the unique model identifier 
-   * @param {object} body 
+   * @param {string} id - the unique model identifier
+   * @param {object} body
    * @returns {this}
    */
   findByIdAndUpdate(id, body) {
@@ -116,9 +119,9 @@ class Endpoint {
   }
 
   /**
-   * Creates a query that finds a model with the specified id and 
-   * removes it from the database 
-   * @param {string} id - the unique model identifier 
+   * Creates a query that finds a model with the specified id and
+   * removes it from the database
+   * @param {string} id - the unique model identifier
    * @returns {this}
    */
   findByIdAndRemove(id) {
@@ -176,7 +179,7 @@ class Endpoint {
       .url(this.config.target.toString());
 
     let Promise = require('./settings').getPromise();
-    
+
     return new Promise((resolve, reject) => {
       if (this.hasCache()) {
         let cachedObject = cache.get(request.url());
@@ -195,7 +198,7 @@ class Endpoint {
             let entry = new modelConstructor(item);
             entry.config(endpointConfig);
             Object.defineProperty(entry, '__request', { value : clone(request), enumerable : false });
-            return entry;            
+            return entry;
           });
         } else {
           model = new modelConstructor(data);
@@ -219,8 +222,8 @@ class Endpoint {
   }
   /**
    * Query helper to skip records returned from the api (if supported). Combined
-   * with the .limit method, this function is great for pagination 
-   * @param {number} skipAmount 
+   * with the .limit method, this function is great for pagination
+   * @param {number} skipAmount
    * @returns this
    */
   skip(skipAmount = 0) {
@@ -230,9 +233,9 @@ class Endpoint {
     return this;
   }
  /**
-  * Query helper to limit the number of results returned (provided the api 
+  * Query helper to limit the number of results returned (provided the api
   * supports it)
-  * @param {number} limitAmount 
+  * @param {number} limitAmount
   * @returns this
   */
   limit(limitAmount = 0) {
