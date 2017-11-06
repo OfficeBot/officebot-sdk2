@@ -10,7 +10,7 @@ beforeEach(() => {
 
   api
     .endpoint('Test')
-    .url('/');
+    .url('');
 
   testModel = api.Test.createNew({sample : 'data'});
 });
@@ -60,7 +60,7 @@ describe('Endpoint', () => {
     .exec()
     .then(response => {
       let firstItem = response[0];
-      
+
       assert(firstItem && firstItem.title);
       done();
     });
@@ -88,7 +88,7 @@ describe('Endpoint', () => {
       });
     });
   });
-  
+
   describe('.findByIdAndUpdate()',() => {
     it('Should return one model', (done) => {
       api.Test
@@ -119,7 +119,7 @@ describe('Models', () => {
     testModel.save().then(() => {
       let statusCode = testModel.__response.status;
       assert(statusCode === 201);
-      done();      
+      done();
     });
   });
   it('Should call the api on .remove', (done) => {
@@ -127,7 +127,7 @@ describe('Models', () => {
     testModel.remove().then(() => {
       let statusCode = testModel.__response.status;
       assert(statusCode === 204);
-      done();      
+      done();
     });
   });
   it('Should call the api on .update with a list of diffs', (done) => {
@@ -136,7 +136,7 @@ describe('Models', () => {
     testModel.update().then(() => {
       let statusCode = testModel.__response.status;
       assert(statusCode === 200);
-      done();      
+      done();
     });
   });
 });

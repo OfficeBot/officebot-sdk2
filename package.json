@@ -15,7 +15,7 @@
     "docs": "node_modules/jsdoc/jsdoc.js  -r -c .jsdoc.json -R sdk-examples.md -d docs",
     "test": "node_modules/jshint/bin/jshint src/*.js && node_modules/mocha/bin/mocha tests/*.js && node ./run-e2e",
     "preversion": "npm test",
-    "version": "npm run build && npm run build-minified && git add -A",
+    "version": "git add -A && npm run build && npm run build-minified",
     "postversion": "git push && git push --tags"
   },
   "keywords": [
