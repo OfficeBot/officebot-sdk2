@@ -21,7 +21,8 @@ class Utils {
      * @returns {object} Copied object
      */
     static clone(obj) {
-        return clone_lib(obj);
+        return obj;
+        // return clone_lib(obj);
         // return privateClone(obj);
     }
 }

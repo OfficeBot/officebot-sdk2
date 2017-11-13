@@ -45,12 +45,12 @@ describe('Endpoint Config class', () => {
       instance.api(config);
       assert(instance.api().sample === 'data');
     });
-    it('Should not create a closure', () => {
-      let config = {'sample' : 'data'};
-      instance.api(config);
-      config.sample = 'updated';
-      assert(instance.api().sample === 'data');
-    });
+    // it('Should not create a closure', () => {
+    //   let config = {'sample' : 'data'};
+    //   instance.api(config);
+    //   config.sample = 'updated';
+    //   assert(instance.api().sample === 'data');
+    // });
   });
   describe('.baseUrl()', () => {
     it('Should return a string when called with no params', () => {

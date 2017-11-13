@@ -142,7 +142,8 @@ class Request {
    * @returns {object}
    */
   toJSON() {
-    return clone(this.config);
+    // return clone(this.config);
+    return JSON.parse( JSON.stringify(this.config) );
   }
 }
 
