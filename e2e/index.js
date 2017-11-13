@@ -10,7 +10,7 @@ beforeEach(() => {
 
   api
     .endpoint('Test')
-    .url('');
+    .url('test');
 
   testModel = api.Test.createNew({sample : 'data'});
 });

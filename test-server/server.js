@@ -8,7 +8,7 @@ const app = express();
 /*
  * Build up our test api router logic
  */
-let API_BASE ='/api';
+let API_BASE ='/api/test';
 let router = express.Router();
 /*
  * Collection endpoints
