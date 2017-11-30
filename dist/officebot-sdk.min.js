@@ -3583,6 +3583,22 @@ class Endpoint {
   }
 
   /**
+    * At the moment, this behaves exactly the same as .find, but uses the
+    * SEARCH verb instead
+    * @param {object} query
+    * @returns {this}
+    */
+  search(query) {
+    this.config.target = new URLBuilder([
+      this.endpointConfig.baseUrl(),
+      this.endpointConfig.url()
+    ]);
+    this.config.method = 'search';
+    this.config.query.search = JSON.stringify(query);
+    return this;
+  }
+
+  /**
    * Creates a query to find a unique model with the specified id
    * and replaces it's data with the specified body object
    * @param {string} id - the unique model identifier
@@ -4179,7 +4195,7 @@ class Request {
    * @returns {object}
    */
   toJSON() {
-    return clone(this.config);
+    return JSON.parse( JSON.stringify(this.config) );
   }
 }
 
@@ -4342,7 +4358,8 @@ class Utils {
      * @returns {object} Copied object
      */
     static clone(obj) {
-        return clone_lib(obj);
+        return obj;
+        // return clone_lib(obj);
         // return privateClone(obj);
     }
 }

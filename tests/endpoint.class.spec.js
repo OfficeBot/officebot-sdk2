@@ -33,6 +33,9 @@ describe('Endpoint class', () => {
   it('Should have .findByIdAndUpdate method', () => {
     assert('function' === typeof instance.findByIdAndRemove);
   });
+  it('Should have a .search method', () => {
+    assert('function' === typeof instance.search);
+  });
   it('Should have .allowFromCache method', () => {
     assert('function' === typeof instance.allowFromCache);
   });
@@ -119,6 +122,12 @@ describe('Endpoint class', () => {
   describe('.findByIdAndRemove()', () => {
     it('Should return "this"', () => {
       assert(instance === instance.findByIdAndRemove('1'));
+    });
+  });
+
+  describe('.search()', () => {
+    it('Should return "this"', () => {
+      assert(instance === instance.search());
     });
   });
 
