@@ -46,6 +46,7 @@ class Model {
         return instance;
       }).catch(err => {
         cb(err);
+        throw err;
       });
 
     return request;
@@ -182,7 +183,8 @@ class Model {
         instance.__response = response;
         return cb();
       }).catch(err => {
-        return cb(err);
+        cb(err);
+        throw err;
       });
     return request;
   }
