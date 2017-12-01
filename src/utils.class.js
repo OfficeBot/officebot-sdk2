@@ -6,11 +6,11 @@ var clone_lib = require('clone');
 class Utils {
     constructor() {
 
-    }
-    /**
-     * Does nothing
-     * @returns {undefined}
-     */
+        }
+        /**
+         * Does nothing
+         * @returns {undefined}
+         */
     static noop() {
 
     }
@@ -33,14 +33,14 @@ class Utils {
  * @returns {object} Copied object 
  */
 function privateClone(obj) {
-   if(obj === null || typeof(obj) != 'object') {
-      return obj;
-   }
-   var temp = new obj.constructor();
-   for(var key in obj) {
-      temp[key] = privateClone(obj[key]);
-   }
-   return temp;
+    if (obj === null || typeof(obj) != 'object') {
+        return obj;
+    }
+    var temp = new obj.constructor();
+    for (var key in obj) {
+        temp[key] = privateClone(obj[key]);
+    }
+    return temp;
 }
 
 module.exports = Utils;
