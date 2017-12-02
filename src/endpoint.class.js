@@ -129,7 +129,7 @@ class Endpoint {
       this.endpointConfig.url(),
       id
     ]);
-    this.body = body;
+    this.config.body = body;
     this.config.method = 'put';
     return this;
   }
