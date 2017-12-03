@@ -7,7 +7,8 @@ var watchify = require('watchify');
 var babel = require('babelify');
 
 function compile(watch) {
-  var bundler = watchify(browserify('./index.js', { debug: true, standalone : 'officebot-sdk' }).transform(babel, {"presets": ["es2015"] }));
+  var bundler =browserify('./index.js', { debug: true, standalone : 'officebot-sdk' })
+    // .transform(babel, {"presets": ["es2015"] }));
 
   function rebundle() {
     bundler.bundle()
