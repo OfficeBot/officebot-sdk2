@@ -1,6 +1,6 @@
 {
   "name": "officebot-sdk2",
-  "version": "2.0.12",
+  "version": "2.0.13",
   "dependencies": {
     "deep-equal": {
       "version": "1.0.1",
