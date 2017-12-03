@@ -10,7 +10,7 @@ class Model {
   constructor(data = {}) {
     Object.defineProperty(this, '__config', {enumerable : false, writable : true});
     Object.defineProperty(this, '__response', {enumerable : false, writable : true});
-    Object.defineProperty(this, '__original', {value : data, writable : true});
+    Object.defineProperty(this, '__original', {value : jsonpatch.deepClone(data), writable : true});
     Object.defineProperty(this, '__revision', {value : Date.now(), writable : true});
 
     Object.assign(this, clone(data));
@@ -157,7 +157,7 @@ class Model {
    * @returns {undefined}
    */
   makeClean() {
-    this.__original = clone(this);
+    this.__original = jsonpatch.deepClone(this);
   }
 
   /**
