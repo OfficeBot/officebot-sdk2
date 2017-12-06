@@ -1,6 +1,6 @@
 {
   "name": "officebot-sdk",
-  "version": "2.0.15",
+  "version": "2.0.16",
   "description": "Helper library for interacting with RESTful APIs",
   "main": "src/index.js",
   "directories": {
