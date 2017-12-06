@@ -123,7 +123,7 @@ describe('Models', () => {
     });
   });
   it('Should call the api on .remove', (done) => {
-    testModel.id = '12345';
+    testModel._id = '12345';
     testModel.remove().then(() => {
       let statusCode = testModel.__response.status;
       assert(statusCode === 204);
@@ -131,7 +131,7 @@ describe('Models', () => {
     });
   });
   it('Should call the api on .update with a list of diffs', (done) => {
-    testModel.id = '12345';
+    testModel._id = '12345';
     testModel.name = 'Update Call';
     testModel.update().then(() => {
       let statusCode = testModel.__response.status;
