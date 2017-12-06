@@ -28,7 +28,7 @@ class Model {
       //ignore
     }
 
-    let method = this.id ? 'put' : 'post';
+    let method = this._id ? 'put' : 'post';
     let instance = this;
 
     let request = new Request()
@@ -126,8 +126,8 @@ class Model {
     let correctHref;
     if ('object' === typeof this.__config) {
       correctHref = this.__config.baseUrl() + '/' + this.__config.url() + '/';
-      if ('string' === typeof this.id ) {
-        correctHref += this.id;
+      if ('string' === typeof this._id ) {
+        correctHref += this._id;
       }
     } else {
       correctHref = '/__unit_test__';
