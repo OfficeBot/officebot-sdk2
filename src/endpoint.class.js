@@ -232,7 +232,8 @@ class Endpoint {
           cache.invalidate(request.url());
         }
         cb(err);
-        return reject(err);
+        reject(err);
+        throw err;
       });
     });
   }

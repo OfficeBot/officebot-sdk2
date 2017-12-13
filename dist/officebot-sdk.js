@@ -2114,6 +2114,7 @@ if (typeof module === 'object' && module.exports) {
 }
 
 }).call(this,require("buffer").Buffer)
+
 },{"buffer":3}],5:[function(require,module,exports){
 var pSlice = Array.prototype.slice;
 var objectKeys = require('./lib/keys.js');
@@ -3720,7 +3721,8 @@ class Endpoint {
           cache.invalidate(request.url());
         }
         cb(err);
-        return reject(err);
+        reject(err);
+        throw err;
       });
     });
   }
@@ -4385,3 +4387,5 @@ function privateClone(obj) {
 module.exports = Utils;
 },{"clone":4}]},{},[1])(1)
 });
+
+//# sourceMappingURL=officebot-sdk.js.map
