@@ -2114,7 +2114,6 @@ if (typeof module === 'object' && module.exports) {
 }
 
 }).call(this,require("buffer").Buffer)
-
 },{"buffer":3}],5:[function(require,module,exports){
 var pSlice = Array.prototype.slice;
 var objectKeys = require('./lib/keys.js');
@@ -4387,5 +4386,3 @@ function privateClone(obj) {
 module.exports = Utils;
 },{"clone":4}]},{},[1])(1)
 });
-
-//# sourceMappingURL=officebot-sdk.js.map
