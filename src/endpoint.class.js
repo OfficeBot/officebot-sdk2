@@ -95,6 +95,22 @@ class Endpoint {
   }
 
   /**
+    * At the moment, this behaves exactly the same as .find, but uses the
+    * SEARCH verb instead
+    * @param {object} query
+    * @returns {this}
+    */
+  search(query) {
+    this.config.target = new URLBuilder([
+      this.endpointConfig.baseUrl(),
+      this.endpointConfig.url()
+    ]);
+    this.config.method = 'search';
+    this.config.query.search = JSON.stringify(query);
+    return this;
+  }
+
+  /**
    * Creates a query to find a unique model with the specified id
    * and replaces it's data with the specified body object
    * @param {string} id - the unique model identifier
@@ -113,7 +129,7 @@ class Endpoint {
       this.endpointConfig.url(),
       id
     ]);
-    this.body = body;
+    this.config.body = body;
     this.config.method = 'put';
     return this;
   }
@@ -216,7 +232,8 @@ class Endpoint {
           cache.invalidate(request.url());
         }
         cb(err);
-        return reject(err);
+        reject(err);
+        throw err;
       });
     });
   }

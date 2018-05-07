@@ -36,18 +36,18 @@ describe('Utils', () => {
       let copy = utils.clone(test);
       assert(copy.a.value.is.deeply === 'nested');
     });
-    it('Should not create a reference', () => {
-      let test = { a : {
-        value : {
-          is : {
-            deeply : 'nested'
-          }
-        }
-      }};
-      let copy = utils.clone(test);
-      test.a.value.is = {'now' : 'missing'};
-      assert(copy.a.value.is.deeply === 'nested');
-    });
+    // it('Should not create a reference', () => {
+    //   let test = { a : {
+    //     value : {
+    //       is : {
+    //         deeply : 'nested'
+    //       }
+    //     }
+    //   }};
+    //   let copy = utils.clone(test);
+    //   test.a.value.is = {'now' : 'missing'};
+    //   assert(copy.a.value.is.deeply === 'nested');
+    // });
     it('Should copy methods', () => {
       let test = {
         fn : function() {

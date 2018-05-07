@@ -1859,7 +1859,263 @@ function numberIsNaN (obj) {
   return obj !== obj // eslint-disable-line no-self-compare
 }
 
-},{"base64-js":2,"ieee754":10}],4:[function(require,module,exports){
+},{"base64-js":2,"ieee754":11}],4:[function(require,module,exports){
+(function (Buffer){
+var clone = (function() {
+'use strict';
+
+function _instanceof(obj, type) {
+  return type != null && obj instanceof type;
+}
+
+var nativeMap;
+try {
+  nativeMap = Map;
+} catch(_) {
+  // maybe a reference error because no `Map`. Give it a dummy value that no
+  // value will ever be an instanceof.
+  nativeMap = function() {};
+}
+
+var nativeSet;
+try {
+  nativeSet = Set;
+} catch(_) {
+  nativeSet = function() {};
+}
+
+var nativePromise;
+try {
+  nativePromise = Promise;
+} catch(_) {
+  nativePromise = function() {};
+}
+
+/**
+ * Clones (copies) an Object using deep copying.
+ *
+ * This function supports circular references by default, but if you are certain
+ * there are no circular references in your object, you can save some CPU time
+ * by calling clone(obj, false).
+ *
+ * Caution: if `circular` is false and `parent` contains circular references,
+ * your program may enter an infinite loop and crash.
+ *
+ * @param `parent` - the object to be cloned
+ * @param `circular` - set to true if the object to be cloned may contain
+ *    circular references. (optional - true by default)
+ * @param `depth` - set to a number if the object is only to be cloned to
+ *    a particular depth. (optional - defaults to Infinity)
+ * @param `prototype` - sets the prototype to be used when cloning an object.
+ *    (optional - defaults to parent prototype).
+ * @param `includeNonEnumerable` - set to true if the non-enumerable properties
+ *    should be cloned as well. Non-enumerable properties on the prototype
+ *    chain will be ignored. (optional - false by default)
+*/
+function clone(parent, circular, depth, prototype, includeNonEnumerable) {
+  if (typeof circular === 'object') {
+    depth = circular.depth;
+    prototype = circular.prototype;
+    includeNonEnumerable = circular.includeNonEnumerable;
+    circular = circular.circular;
+  }
+  // maintain two arrays for circular references, where corresponding parents
+  // and children have the same index
+  var allParents = [];
+  var allChildren = [];
+
+  var useBuffer = typeof Buffer != 'undefined';
+
+  if (typeof circular == 'undefined')
+    circular = true;
+
+  if (typeof depth == 'undefined')
+    depth = Infinity;
+
+  // recurse this function so we don't reset allParents and allChildren
+  function _clone(parent, depth) {
+    // cloning null always returns null
+    if (parent === null)
+      return null;
+
+    if (depth === 0)
+      return parent;
+
+    var child;
+    var proto;
+    if (typeof parent != 'object') {
+      return parent;
+    }
+
+    if (_instanceof(parent, nativeMap)) {
+      child = new nativeMap();
+    } else if (_instanceof(parent, nativeSet)) {
+      child = new nativeSet();
+    } else if (_instanceof(parent, nativePromise)) {
+      child = new nativePromise(function (resolve, reject) {
+        parent.then(function(value) {
+          resolve(_clone(value, depth - 1));
+        }, function(err) {
+          reject(_clone(err, depth - 1));
+        });
+      });
+    } else if (clone.__isArray(parent)) {
+      child = [];
+    } else if (clone.__isRegExp(parent)) {
+      child = new RegExp(parent.source, __getRegExpFlags(parent));
+      if (parent.lastIndex) child.lastIndex = parent.lastIndex;
+    } else if (clone.__isDate(parent)) {
+      child = new Date(parent.getTime());
+    } else if (useBuffer && Buffer.isBuffer(parent)) {
+      child = new Buffer(parent.length);
+      parent.copy(child);
+      return child;
+    } else if (_instanceof(parent, Error)) {
+      child = Object.create(parent);
+    } else {
+      if (typeof prototype == 'undefined') {
+        proto = Object.getPrototypeOf(parent);
+        child = Object.create(proto);
+      }
+      else {
+        child = Object.create(prototype);
+        proto = prototype;
+      }
+    }
+
+    if (circular) {
+      var index = allParents.indexOf(parent);
+
+      if (index != -1) {
+        return allChildren[index];
+      }
+      allParents.push(parent);
+      allChildren.push(child);
+    }
+
+    if (_instanceof(parent, nativeMap)) {
+      parent.forEach(function(value, key) {
+        var keyChild = _clone(key, depth - 1);
+        var valueChild = _clone(value, depth - 1);
+        child.set(keyChild, valueChild);
+      });
+    }
+    if (_instanceof(parent, nativeSet)) {
+      parent.forEach(function(value) {
+        var entryChild = _clone(value, depth - 1);
+        child.add(entryChild);
+      });
+    }
+
+    for (var i in parent) {
+      var attrs;
+      if (proto) {
+        attrs = Object.getOwnPropertyDescriptor(proto, i);
+      }
+
+      if (attrs && attrs.set == null) {
+        continue;
+      }
+      child[i] = _clone(parent[i], depth - 1);
+    }
+
+    if (Object.getOwnPropertySymbols) {
+      var symbols = Object.getOwnPropertySymbols(parent);
+      for (var i = 0; i < symbols.length; i++) {
+        // Don't need to worry about cloning a symbol because it is a primitive,
+        // like a number or string.
+        var symbol = symbols[i];
+        var descriptor = Object.getOwnPropertyDescriptor(parent, symbol);
+        if (descriptor && !descriptor.enumerable && !includeNonEnumerable) {
+          continue;
+        }
+        child[symbol] = _clone(parent[symbol], depth - 1);
+        if (!descriptor.enumerable) {
+          Object.defineProperty(child, symbol, {
+            enumerable: false
+          });
+        }
+      }
+    }
+
+    if (includeNonEnumerable) {
+      var allPropertyNames = Object.getOwnPropertyNames(parent);
+      for (var i = 0; i < allPropertyNames.length; i++) {
+        var propertyName = allPropertyNames[i];
+        var descriptor = Object.getOwnPropertyDescriptor(parent, propertyName);
+        if (descriptor && descriptor.enumerable) {
+          continue;
+        }
+        child[propertyName] = _clone(parent[propertyName], depth - 1);
+        Object.defineProperty(child, propertyName, {
+          enumerable: false
+        });
+      }
+    }
+
+    return child;
+  }
+
+  return _clone(parent, depth);
+}
+
+/**
+ * Simple flat clone using prototype, accepts only objects, usefull for property
+ * override on FLAT configuration object (no nested props).
+ *
+ * USE WITH CAUTION! This may not behave as you wish if you do not know how this
+ * works.
+ */
+clone.clonePrototype = function clonePrototype(parent) {
+  if (parent === null)
+    return null;
+
+  var c = function () {};
+  c.prototype = parent;
+  return new c();
+};
+
+// private utility functions
+
+function __objToStr(o) {
+  return Object.prototype.toString.call(o);
+}
+clone.__objToStr = __objToStr;
+
+function __isDate(o) {
+  return typeof o === 'object' && __objToStr(o) === '[object Date]';
+}
+clone.__isDate = __isDate;
+
+function __isArray(o) {
+  return typeof o === 'object' && __objToStr(o) === '[object Array]';
+}
+clone.__isArray = __isArray;
+
+function __isRegExp(o) {
+  return typeof o === 'object' && __objToStr(o) === '[object RegExp]';
+}
+clone.__isRegExp = __isRegExp;
+
+function __getRegExpFlags(re) {
+  var flags = '';
+  if (re.global) flags += 'g';
+  if (re.ignoreCase) flags += 'i';
+  if (re.multiline) flags += 'm';
+  return flags;
+}
+clone.__getRegExpFlags = __getRegExpFlags;
+
+return clone;
+})();
+
+if (typeof module === 'object' && module.exports) {
+  module.exports = clone;
+}
+
+}).call(this,require("buffer").Buffer)
+
+},{"buffer":3}],5:[function(require,module,exports){
 var pSlice = Array.prototype.slice;
 var objectKeys = require('./lib/keys.js');
 var isArguments = require('./lib/is_arguments.js');
@@ -3328,6 +3584,22 @@ class Endpoint {
   }
 
   /**
+    * At the moment, this behaves exactly the same as .find, but uses the
+    * SEARCH verb instead
+    * @param {object} query
+    * @returns {this}
+    */
+  search(query) {
+    this.config.target = new URLBuilder([
+      this.endpointConfig.baseUrl(),
+      this.endpointConfig.url()
+    ]);
+    this.config.method = 'search';
+    this.config.query.search = JSON.stringify(query);
+    return this;
+  }
+
+  /**
    * Creates a query to find a unique model with the specified id
    * and replaces it's data with the specified body object
    * @param {string} id - the unique model identifier
@@ -3346,7 +3618,7 @@ class Endpoint {
       this.endpointConfig.url(),
       id
     ]);
-    this.body = body;
+    this.config.body = body;
     this.config.method = 'put';
     return this;
   }
@@ -3449,7 +3721,8 @@ class Endpoint {
           cache.invalidate(request.url());
         }
         cb(err);
-        return reject(err);
+        reject(err);
+        throw err;
       });
     });
   }
@@ -3595,11 +3868,50 @@ const Request = require('./request.class');
  * @constructor
  */
 class Model {
-    constructor(data = {}) {
-            Object.defineProperty(this, '__config', { enumerable: false, writable: true });
-            Object.defineProperty(this, '__response', { enumerable: false, writable: true });
-            Object.defineProperty(this, '__original', { value: data, writable: true });
-            Object.defineProperty(this, '__revision', { value: Date.now(), writable: true });
+  constructor(data = {}) {
+    Object.defineProperty(this, '__config', {enumerable : false, writable : true});
+    Object.defineProperty(this, '__response', {enumerable : false, writable : true});
+    Object.defineProperty(this, '__original', {value : jsonpatch.deepClone(data), writable : true});
+    Object.defineProperty(this, '__revision', {value : Date.now(), writable : true});
+
+    Object.assign(this, clone(data));
+  }
+  /**
+   * Persists this model back to the api
+   * @param {function=} cb - Callback to invoke on completion (failure or success)
+   * @returns {Request}
+   */
+  save(cb = noop) {
+    let headers = {};
+    try {
+      headers = this.__config.api().commonHeaders();
+    } catch(e) {
+      //ignore
+    }
+
+    let method = this._id ? 'put' : 'post';
+    let instance = this;
+
+    let request = new Request()
+      .url(this.makeHref())
+      .method(method)
+      .headers(headers)
+      .body(this)
+      .exec()
+      .then((response) => {
+        Object.assign(instance, clone(response.data));
+        instance.__revision = Date.now();
+        instance.__response = response;
+        instance.makeClean();
+        cb();
+        return instance;
+      }).catch(err => {
+        cb(err);
+        throw err;
+      });
+
+    return request;
+  }
 
             Object.assign(this, clone(data));
         }
@@ -3675,40 +3987,41 @@ class Model {
         return this;
     }
 
-    /**
-     * Puts only the changes (in patch notation) back to the api. The
-     * server-side endpoint must support PATCH
-     * @returns {Request}
-     */
-    update() {
-        //use patch
-        let headers = this.__config.api().commonHeaders();
-
-        let patches = this.getDiffs();
-        let targetUrl = this.makeHref();
-        let instance = this;
-        let request = new Request()
-            .url(targetUrl)
-            .method('patch')
-            .headers(headers)
-            .body(patches)
-            .exec()
-            .then((response) => {
-                Object.assign(instance, clone(response.data));
-                instance.__revision = Date.now();
-                instance.__response = response;
-                instance.makeClean();
-            });
-        return request;
+  makeHref() {
+    let correctHref;
+    if ('object' === typeof this.__config) {
+      correctHref = this.__config.baseUrl() + '/' + this.__config.url() + '/';
+      if ('string' === typeof this._id ) {
+        correctHref += this._id;
+      }
+    } else {
+      correctHref = '/__unit_test__';
     }
 
-    /**
-     * Sets the underlying API config
-     * @param {EndpointConfig} endpointConfig
-     */
-    config(endpointConfig = {}) {
-        this.__config = endpointConfig;
-    }
+  /**
+   * Returns a list of diffs comparing this version to the last
+   * synced version from the server
+   * @private
+   * @returns {object[]} Array of changes
+   */
+  getDiffs() {
+    return jsonpatch.compare(this.__original, this);
+  }
+  /**
+   * Returns the current status of this model
+   * @returns {boolean}
+   */
+  isDirty() {
+    return this.getDiffs().length > 0;
+  }
+  /**
+   * Clears out the change history and syncs the underlying original version
+   * to the current version
+   * @returns {undefined}
+   */
+  makeClean() {
+    this.__original = jsonpatch.deepClone(this);
+  }
 
     makeHref() {
         let correctHref;
@@ -3748,33 +4061,20 @@ class Model {
         this.__original = clone(this);
     }
 
-    /**
-     * Removes this modal from the api
-     * @param {function=} cb - Function to call on completetion (success or failure)
-     * @returns {Request}
-     */
-    remove(cb = noop) {
-        let headers = {};
-        try {
-            headers = this.__config.api().commonHeaders();
-        } catch (e) {}
-
-        let targetUrl = this.makeHref();
-        let instance = this;
-
-        let request = new Request()
-            .url(targetUrl)
-            .method('delete')
-            .headers(headers)
-            .exec()
-            .then((response) => {
-                instance.__response = response;
-                return cb();
-            }).catch(err => {
-                return cb(err);
-            });
-        return request;
-    }
+    let request = new Request()
+      .url(targetUrl)
+      .method('delete')
+      .headers(headers)
+      .exec()
+      .then((response) => {
+        instance.__response = response;
+        return cb();
+      }).catch(err => {
+        cb(err);
+        throw err;
+      });
+    return request;
+  }
 
 }
 
@@ -3924,7 +4224,7 @@ class Request {
    * @returns {object}
    */
   toJSON() {
-    return clone(this.config);
+    return JSON.parse( JSON.stringify(this.config) );
   }
 }
 
@@ -4087,7 +4387,8 @@ class Utils {
      * @returns {object} Copied object
      */
     static clone(obj) {
-        return clone_lib(obj);
+        return obj;
+        // return clone_lib(obj);
         // return privateClone(obj);
     }
 }
@@ -4109,169 +4410,7 @@ function privateClone(obj) {
 }
 
 module.exports = Utils;
-},{"clone":25}],25:[function(require,module,exports){
-(function (Buffer){
-var clone = (function() {
-'use strict';
-
-/**
- * Clones (copies) an Object using deep copying.
- *
- * This function supports circular references by default, but if you are certain
- * there are no circular references in your object, you can save some CPU time
- * by calling clone(obj, false).
- *
- * Caution: if `circular` is false and `parent` contains circular references,
- * your program may enter an infinite loop and crash.
- *
- * @param `parent` - the object to be cloned
- * @param `circular` - set to true if the object to be cloned may contain
- *    circular references. (optional - true by default)
- * @param `depth` - set to a number if the object is only to be cloned to
- *    a particular depth. (optional - defaults to Infinity)
- * @param `prototype` - sets the prototype to be used when cloning an object.
- *    (optional - defaults to parent prototype).
-*/
-function clone(parent, circular, depth, prototype) {
-  var filter;
-  if (typeof circular === 'object') {
-    depth = circular.depth;
-    prototype = circular.prototype;
-    filter = circular.filter;
-    circular = circular.circular
-  }
-  // maintain two arrays for circular references, where corresponding parents
-  // and children have the same index
-  var allParents = [];
-  var allChildren = [];
-
-  var useBuffer = typeof Buffer != 'undefined';
-
-  if (typeof circular == 'undefined')
-    circular = true;
-
-  if (typeof depth == 'undefined')
-    depth = Infinity;
-
-  // recurse this function so we don't reset allParents and allChildren
-  function _clone(parent, depth) {
-    // cloning null always returns null
-    if (parent === null)
-      return null;
-
-    if (depth == 0)
-      return parent;
-
-    var child;
-    var proto;
-    if (typeof parent != 'object') {
-      return parent;
-    }
-
-    if (clone.__isArray(parent)) {
-      child = [];
-    } else if (clone.__isRegExp(parent)) {
-      child = new RegExp(parent.source, __getRegExpFlags(parent));
-      if (parent.lastIndex) child.lastIndex = parent.lastIndex;
-    } else if (clone.__isDate(parent)) {
-      child = new Date(parent.getTime());
-    } else if (useBuffer && Buffer.isBuffer(parent)) {
-      child = new Buffer(parent.length);
-      parent.copy(child);
-      return child;
-    } else {
-      if (typeof prototype == 'undefined') {
-        proto = Object.getPrototypeOf(parent);
-        child = Object.create(proto);
-      }
-      else {
-        child = Object.create(prototype);
-        proto = prototype;
-      }
-    }
-
-    if (circular) {
-      var index = allParents.indexOf(parent);
-
-      if (index != -1) {
-        return allChildren[index];
-      }
-      allParents.push(parent);
-      allChildren.push(child);
-    }
-
-    for (var i in parent) {
-      var attrs;
-      if (proto) {
-        attrs = Object.getOwnPropertyDescriptor(proto, i);
-      }
-
-      if (attrs && attrs.set == null) {
-        continue;
-      }
-      child[i] = _clone(parent[i], depth - 1);
-    }
-
-    return child;
-  }
-
-  return _clone(parent, depth);
-}
-
-/**
- * Simple flat clone using prototype, accepts only objects, usefull for property
- * override on FLAT configuration object (no nested props).
- *
- * USE WITH CAUTION! This may not behave as you wish if you do not know how this
- * works.
- */
-clone.clonePrototype = function clonePrototype(parent) {
-  if (parent === null)
-    return null;
-
-  var c = function () {};
-  c.prototype = parent;
-  return new c();
-};
-
-// private utility functions
-
-function __objToStr(o) {
-  return Object.prototype.toString.call(o);
-};
-clone.__objToStr = __objToStr;
-
-function __isDate(o) {
-  return typeof o === 'object' && __objToStr(o) === '[object Date]';
-};
-clone.__isDate = __isDate;
-
-function __isArray(o) {
-  return typeof o === 'object' && __objToStr(o) === '[object Array]';
-};
-clone.__isArray = __isArray;
-
-function __isRegExp(o) {
-  return typeof o === 'object' && __objToStr(o) === '[object RegExp]';
-};
-clone.__isRegExp = __isRegExp;
-
-function __getRegExpFlags(re) {
-  var flags = '';
-  if (re.global) flags += 'g';
-  if (re.ignoreCase) flags += 'i';
-  if (re.multiline) flags += 'm';
-  return flags;
-};
-clone.__getRegExpFlags = __getRegExpFlags;
-
-return clone;
-})();
-
-if (typeof module === 'object' && module.exports) {
-  module.exports = clone;
-}
-
-}).call(this,require("buffer").Buffer)
-},{"buffer":3}]},{},[1])(1)
+},{"clone":4}]},{},[1])(1)
 });
+
+//# sourceMappingURL=officebot-sdk.js.map
