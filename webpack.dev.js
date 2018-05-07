@@ -7,7 +7,7 @@ module.exports = merge(common, {
   devtool: 'inline-source-map',
   watch :  true,
   plugins: [
-    new CleanWebpackPlugin('dist/officebot-sdk2.js'),
+    new CleanWebpackPlugin('dist'),
   ],
   output: {
     filename: 'officebot-sdk2.js',

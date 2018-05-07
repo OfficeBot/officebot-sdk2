@@ -16,7 +16,8 @@
     "test": "node_modules/jshint/bin/jshint src/*.js && node_modules/mocha/bin/mocha tests/*.js && node ./run-e2e",
     "preversion": "npm test",
     "version": "git add -A && npm run build && npm run build-minified",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "prepublish": "webpack --config webpack.prod.js"
   },
   "keywords": [
     "rest",
